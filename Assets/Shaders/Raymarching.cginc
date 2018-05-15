@@ -49,15 +49,16 @@ float3 phongShading(float3 normal, float3 lightDirection, float3 diffuse, float3
 	return clamp(col, 0.0, 1.0);
 }
 
-float3 calculateLight(float3 color, float3 p, float3 viewVec, float3 normal, float3 aLightPos, float lightIntensity, float3 lightColor) {
+float3 calculateLight(float3 color, float3 p, float3 viewVec, float3 normal, float3 aLightPos,  float3 lightColor) {
 	float3 lightDirection = normalize(aLightPos - p);
+
 	float lightDistance = length(aLightPos - p);
 
-	float shadow = rayMarching(p, lightDirection, 0.0001, lightDistance);
-	if (shadow == lightDistance) {
-		color += lightIntensity * phongShading(normal, lightDirection, float3(1.0,0.0,0.0), viewVec, lightColor);
+	//float shadow = rayMarching(p, lightDirection, 0.0001, lightDistance);
+	//if (shadow == lightDistance) {
+		color += phongShading(normal, lightDirection, float3(1.0,0.0,0.0), viewVec, lightColor);
 
-	}
+	//}
 	return color;
 }
 

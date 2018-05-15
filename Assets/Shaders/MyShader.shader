@@ -11,16 +11,22 @@
 
 		Pass
 		{
+
 			CGPROGRAM
+			#pragma target 5.0
 			#pragma vertex vert
 			#pragma fragment frag
-			
+			//#pragma enable_d3d11_debug_symbols
+
 			#include "UnityCG.cginc"
-			#include "Lighting.cginc"
+			//#include "Lighting.cginc"
+			//#include "UnityDeferredLibrary.cginc"
 			uniform float3 _CamForward;
 			uniform float3 _CamRight;
 			uniform float3 _CamUp;
-			uniform float  _Fov;
+			uniform float  _Fov;		
+			
+			StructuredBuffer<float> _LightInfo;
 
 			static const int MAX_MARCHING_STEPS = 256;
 			static const float EPSILON = 0.00001;
@@ -75,10 +81,20 @@
 					float3 p = rayOrigin + (t * rayDirection);
 					float3 normal = estimateNormal(p);
 					float3 viewVec = normalize(rayOrigin - p);
-					float3 lightPos = _WorldSpaceLightPos0.xyz;
-					color = calculateLight(color, p, viewVec, normal, lightPos, 1.0, _LightColor0);
-					color = clamp(color, 0.0, 1.0);
 
+					
+					uint numStructs = 0;
+					uint numStrides = 0;
+					_LightInfo.GetDimensions(numStructs, numStrides);
+					for (uint i = 0; i <numStructs/4; i++) {
+
+						float4 lightPos = float4(_LightInfo[(i * 4) + 0], -_LightInfo[(i * 4) + 1], _LightInfo[(i * 4) + 2], _LightInfo[(i * 4) + 3]);
+						
+						color += calculateLight(color, p, viewVec, normal, lightPos.xyz, float3(1.0, 1.0, 1.0));
+					}
+					
+
+					color = clamp(color, 0.0, 1.0);
 					col.rgb = color;
 				}		
 
