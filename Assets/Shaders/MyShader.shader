@@ -60,22 +60,24 @@
 				// _ScreenParams.x/ _ScreenParams.y = aspect
 				myUv.x = (2.0*i.uv.x - 1.0) * (_ScreenParams.x/ _ScreenParams.y) * fov;
 				myUv.y = (1.0 - 2.0*i.uv.y) * fov;
-				float3 transformedRayDirection = normalize(1.0*_CamForward + _CamRight*myUv.x + _CamUp* myUv.y);
+				float3 rayDirection = normalize(1.0*_CamForward + _CamRight*myUv.x + _CamUp* myUv.y);
 				
 				// do the marching    
 				//_ProjectionParams.y = near clip
 				//_ProjectionParams.z = far clip	
-				float t = rayMarching(rayOrigin, transformedRayDirection, _ProjectionParams.y, _ProjectionParams.z);				
+				float t = rayMarching(rayOrigin, rayDirection, _ProjectionParams.y, _ProjectionParams.z);
 				
 				if (t < _ProjectionParams.z) {
 					float3 color = float3(0.0, 0.0, 0.0);
+					// TODO get ambient light from unity
+					//color = float3(0.05,0.05,0.05);
+					float3 p = rayOrigin + (t * rayDirection);
+					float3 normal = estimateNormal(p);
+					float3 viewVec = normalize(rayOrigin - p);
+					color = calculateLight(color, p, viewVec, normal, float3(0.0,-3.0,0.0), 1.0);
+					color = clamp(color, 0.0, 1.0);
+
 					col.rgb = color;
-				//	/*color = float3(0.05,0.05,0.05);
-				//	float3 p = rayOrigin + (t * rayDirection);
-				//	float3 normal = estimateNormal(p);
-				//	float3 viewVec = normalize(rayOrigin - p);
-				//	color = calculateLight(color, p, viewVec, normal, float3(1.0,1.0,1.0), 1.0, t);
-				//	color = clamp(color, 0.0, 1.0);*/
 				}		
 
 				return col;
