@@ -15,14 +15,14 @@ public class MovePlayer : MonoBehaviour {
 
 
 
-        if (Input.GetButton("Jump") )
+        if (Input.GetButtonDown("Jump") )
         {
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, .4f))
-            {
-                Debug.DrawRay(transform.position, Vector3.down * hit.distance, Color.yellow);                
-                rb.AddForce(Vector3.up, ForceMode.Impulse);
-            }
+            //RaycastHit hit;
+            //if (Physics.Raycast(transform.position, Vector3.down, out hit, .4f))
+            //{
+            //    Debug.DrawRay(transform.position, Vector3.down * hit.distance, Color.yellow);                
+                rb.AddForce(5.0f*Vector3.up, ForceMode.Impulse);
+           // }
            
         }
     }
