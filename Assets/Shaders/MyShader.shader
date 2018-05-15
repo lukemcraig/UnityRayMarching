@@ -24,8 +24,11 @@
 			uniform float3 _CamForward;
 			uniform float3 _CamRight;
 			uniform float3 _CamUp;
-			uniform float  _Fov;		
-			
+			uniform float  _Fov;	
+
+			uniform float3  _p1;
+			uniform float3  _p2;
+
 			StructuredBuffer<float> _LightInfo;
 
 			static const int MAX_MARCHING_STEPS = 256;
@@ -88,7 +91,7 @@
 					_LightInfo.GetDimensions(numStructs, numStrides);
 					for (uint i = 0; i <numStructs/4; i++) {
 
-						float4 lightPos = float4(_LightInfo[(i * 4) + 0], -_LightInfo[(i * 4) + 1], _LightInfo[(i * 4) + 2], _LightInfo[(i * 4) + 3]);
+						float4 lightPos = float4(_LightInfo[(i * 4) + 0], _LightInfo[(i * 4) + 1], _LightInfo[(i * 4) + 2], _LightInfo[(i * 4) + 3]);
 						
 						color += calculateLight(color, p, viewVec, normal, lightPos.xyz, float3(1.0, 1.0, 1.0));
 					}

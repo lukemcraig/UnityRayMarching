@@ -10,6 +10,9 @@ public class CameraScript : MonoBehaviour
     ComputeBuffer lightInfo;
     float[] lightPositions;
 
+    public Transform p1;
+    public Transform p2;
+
     private void Start()
     {
        
@@ -20,12 +23,12 @@ public class CameraScript : MonoBehaviour
     {
         myMaterial.SetVector("_CamForward", transform.forward);
         myMaterial.SetVector("_CamRight", transform.right);
-        myMaterial.SetVector("_CamUp", transform.up);        
+        myMaterial.SetVector("_CamUp", -transform.up);        
         myMaterial.SetFloat("_Fov", (Camera.main.fieldOfView * Mathf.Deg2Rad) / 2.0f);
 
         lights = FindObjectsOfType(typeof(Light)) as Light[];
         //lightInfo = new Texture2D(1, lights.Length);
-        lightInfo = new ComputeBuffer(4 * lights.Length, 4);
+        lightInfo = new ComputeBuffer(4 * lights.Length, sizeof(float));
         lightPositions = new float[4 * lights.Length];
         myMaterial.SetBuffer("_LightInfo", lightInfo);
 
@@ -38,8 +41,10 @@ public class CameraScript : MonoBehaviour
             lightPositions[(i * 4)+2] = lp.z;
             lightPositions[(i * 4)+3] = 1.0f;
         }
-        lightInfo.SetData(lightPositions);       
+        lightInfo.SetData(lightPositions);
 
+        myMaterial.SetVector("_p1", p1.position);
+        myMaterial.SetVector("_p2", p2.position);
 
         Graphics.Blit(source, destination, myMaterial, 0);
     }

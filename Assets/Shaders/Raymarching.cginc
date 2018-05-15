@@ -6,11 +6,21 @@ float signedSphere(float3 position, float radius) {
 	return length(position) - radius;
 }
 
+// http://iquilezles.org/www/articles/smin/smin.htm
+// polynomial smooth min
+float smin(float a, float b, float k) {
+	float h = clamp(0.5 + 0.5*(b - a) / k, 0.0, 1.0);
+	return lerp(b, a, h) - k * h*(1.0 - h);
+	return a;
+}
+
 // there is only one "surface", the scene surface.
 float sceneSDF(float3 position) {
 
-	float sphere = signedSphere(position, 0.3);
-	return sphere;
+	float sphere = signedSphere(position - _p1, 0.3);
+	float sphere2 = signedSphere(position - _p2, 0.3);
+
+	return smin(sphere,sphere2,0.1);
 }
 
 float rayMarching(float3 rayOrigin, float3 rayDirection, float min, float max) {
