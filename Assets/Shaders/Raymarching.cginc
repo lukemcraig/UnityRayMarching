@@ -36,26 +36,26 @@ float rayMarching(float3 rayOrigin, float3 rayDirection, float min, float max) {
 	return max;
 }
 
-float3 labertianShading(float3 normal, float3 lightDirection, float3 diffuse) {
-	float3 col = (dot(normal, lightDirection)*diffuse);
+float3 labertianShading(float3 normal, float3 lightDirection, float3 diffuse, float3 lightColor) {
+	float3 col = lightColor*(dot(normal, lightDirection)*diffuse);
 	return clamp(col, 0.0, 1.0);
 }
 
-float3 phongShading(float3 normal, float3 lightDirection, float3 diffuse, float3 viewVec) {
-	float3 lambertian = labertianShading(normal, lightDirection, diffuse);
+float3 phongShading(float3 normal, float3 lightDirection, float3 diffuse, float3 viewVec, float3 lightColor) {
+	float3 lambertian = labertianShading(normal, lightDirection, diffuse, lightColor);
 	float3 h = normalize(viewVec + lightDirection);
 	float3 specular = float3(1.0, 1.0, 1.0)*pow(max(0, dot(normal, h)), 1000);
 	float3 col = lambertian + specular;
 	return clamp(col, 0.0, 1.0);
 }
 
-float3 calculateLight(float3 color, float3 p, float3 viewVec, float3 normal, float3 aLightPos, float lightIntensity) {
+float3 calculateLight(float3 color, float3 p, float3 viewVec, float3 normal, float3 aLightPos, float lightIntensity, float3 lightColor) {
 	float3 lightDirection = normalize(aLightPos - p);
 	float lightDistance = length(aLightPos - p);
 
 	float shadow = rayMarching(p, lightDirection, 0.0001, lightDistance);
 	if (shadow == lightDistance) {
-		color += lightIntensity * phongShading(normal, lightDirection, float3(1.0,0.0,0.0), viewVec);
+		color += lightIntensity * phongShading(normal, lightDirection, float3(1.0,0.0,0.0), viewVec, lightColor);
 
 	}
 	return color;

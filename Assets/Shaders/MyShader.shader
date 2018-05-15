@@ -16,6 +16,7 @@
 			#pragma fragment frag
 			
 			#include "UnityCG.cginc"
+			#include "Lighting.cginc"
 			uniform float3 _CamForward;
 			uniform float3 _CamRight;
 			uniform float3 _CamUp;
@@ -74,7 +75,8 @@
 					float3 p = rayOrigin + (t * rayDirection);
 					float3 normal = estimateNormal(p);
 					float3 viewVec = normalize(rayOrigin - p);
-					color = calculateLight(color, p, viewVec, normal, float3(0.0,-3.0,0.0), 1.0);
+					float3 lightPos = _WorldSpaceLightPos0.xyz;
+					color = calculateLight(color, p, viewVec, normal, lightPos, 1.0, _LightColor0);
 					color = clamp(color, 0.0, 1.0);
 
 					col.rgb = color;
