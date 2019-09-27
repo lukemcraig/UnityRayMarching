@@ -12,6 +12,7 @@ public class CameraScript : MonoBehaviour
 
     public Transform p1;
     public Transform p2;
+    public Transform p3;
 
     private void Start()
     {
@@ -45,6 +46,7 @@ public class CameraScript : MonoBehaviour
 
         myMaterial.SetVector("_p1", p1.position);
         myMaterial.SetVector("_p2", p2.position);
+        myMaterial.SetVector("_p3", p3.position);
 
         Graphics.Blit(source, destination, myMaterial, 0);
     }

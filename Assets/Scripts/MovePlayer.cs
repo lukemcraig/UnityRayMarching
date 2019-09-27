@@ -21,7 +21,7 @@ public class MovePlayer : MonoBehaviour {
             //if (Physics.Raycast(transform.position, Vector3.down, out hit, .4f))
             //{
             //    Debug.DrawRay(transform.position, Vector3.down * hit.distance, Color.yellow);                
-                rb.AddForce(5.0f*Vector3.up, ForceMode.Impulse);
+                rb.AddForce(5.0f*Vector3.up, ForceMode.VelocityChange);
            // }
            
         }

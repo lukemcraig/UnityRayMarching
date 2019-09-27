@@ -6,6 +6,11 @@ float signedSphere(float3 position, float radius) {
 	return length(position) - radius;
 }
 
+float unsignedBox(float3 position, float3 b)
+{
+	return length(max(abs(position) - b, 0.0));
+}
+
 // http://iquilezles.org/www/articles/smin/smin.htm
 // polynomial smooth min
 float smin(float a, float b, float k) {
@@ -18,16 +23,25 @@ float smin(float a, float b, float k) {
 float sceneSDF(float3 position) {
 
 	float sphere = signedSphere(position - _p1, 0.3);
-	float sphere2 = signedSphere(position - _p2, 0.3);
+	float result = sphere;
 
-	return smin(sphere,sphere2,0.5);
+	float sphere2 = signedSphere(position - _p2, 0.3);
+	result = smin(result, sphere2, 0.5);
+
+	float box = unsignedBox(position - _p3, float3(2.5,.5,2.5));
+	result = smin(result, box, 0.5);
+
+	return result;
 }
 
 float rayMarching(float3 rayOrigin, float3 rayDirection, float min, float max) {
 	
 	float t = min;
 	for (int i = 0; i<MAX_MARCHING_STEPS; i++) {
-		float dist = sceneSDF(rayOrigin + (t*rayDirection));
+		float3 p = rayOrigin + (t*rayDirection);		
+
+		float dist = sceneSDF(p);
+
 		// if the signed distance function evaluates to a negative number
 		if (dist < EPSILON) {
 			// we are in the scene "surface"

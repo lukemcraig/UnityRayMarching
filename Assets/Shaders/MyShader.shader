@@ -28,6 +28,7 @@
 
 			uniform float3  _p1;
 			uniform float3  _p2;
+			uniform float3  _p3;
 
 			StructuredBuffer<float> _LightInfo;
 
@@ -84,7 +85,6 @@
 					float3 p = rayOrigin + (t * rayDirection);
 					float3 normal = estimateNormal(p);
 					float3 viewVec = normalize(rayOrigin - p);
-
 					
 					uint numStructs = 0;
 					uint numStrides = 0;
